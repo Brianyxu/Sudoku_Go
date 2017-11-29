@@ -8,7 +8,9 @@ import (
 )
 
 func main() {
-	rawBoard:=readFile()
+	var str	string
+	str = ""
+	rawBoard:=readFile(str)
 	var board [9][9]int
 	for i := 0; i < 9; i++ {
 		for j := 0; j < 9; j++ {
@@ -32,16 +34,15 @@ func main() {
 }
 
 
-func readFile() string{
+func readFile(rawBoard string) string{
 fmt.Println("Enter the file location: ")
-	var rawBoard string
 	var fileName string
 	fmt.Scanln(&fileName)
 	txt, err:= ioutil.ReadFile(fileName)
 	if err != nil {
 	fmt.Println("File does not exist, retry.")
 	//Asks for another input
-	readFile()
+	return readFile(rawBoard)
 	}else{
 	for i:=0;i<len(txt);i++{
 	if _, err := strconv.Atoi(string(txt[i])); err == nil{
