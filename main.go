@@ -4,15 +4,15 @@ import (
 	"fmt"
 	"strconv"
 	"time"
+	"io/ioutil"
 )
 
 func main() {
-	var test string
-	test = ("043080250600000000000001094900004070000608000010200003820500000000000005034090710")
+	rawBoard:=readFile()
 	var board [9][9]int
 	for i := 0; i < 9; i++ {
 		for j := 0; j < 9; j++ {
-			digit, err := strconv.Atoi(string(test[i*9+j]))
+			digit, err := strconv.Atoi(string(rawBoard[i*9+j]))
 			if err != nil {
 				fmt.Printf("error in conversion")
 			}
@@ -24,15 +24,38 @@ func main() {
 	print(board)
 	start := time.Now()
 	if solve(board) {
-	} else {
-		fmt.Printf("No solution found")
+	} else{
+	fmt.Printf("No solution found")
 	}
 	totalTime := time.Since(start)
 	fmt.Printf("\nSolution took %s", totalTime)
 }
 
+
+func readFile() string{
+fmt.Println("Enter the file location: ")
+	var rawBoard string
+	var fileName string
+	fmt.Scanln(&fileName)
+	txt, err:= ioutil.ReadFile(fileName)
+	if err != nil {
+	fmt.Println("File does not exist, retry.")
+	//Asks for another input
+	readFile()
+	}else{
+	for i:=0;i<len(txt);i++{
+	if _, err := strconv.Atoi(string(txt[i])); err == nil{
+	rawBoard=rawBoard+string(txt[i])
+	}
+	}
+	}
+	return rawBoard
+}
+
+
+
 func solve(board [9][9]int) bool {
-	a, b, c := findZero(board)
+	a,b,c := findZero(board)
 	if !a {
 		//If no zeroes, then we're done!
 		fmt.Printf("Solved board: ")
@@ -56,20 +79,20 @@ func solve(board [9][9]int) bool {
 
 func print(board [9][9]int) {
 	for i := 0; i < 9; i++ {
-		for j := 0; j < 9; j++ {
-			fmt.Printf(strconv.Itoa(board[i][j]))
-			fmt.Printf(" ")
-			if j%9 == 8 && (i == 2 || i == 5) {
-				fmt.Println()
-				fmt.Printf("------+-------+------")
-				fmt.Println()
-			} else if j%9 == 8 {
-				fmt.Println()
-			} else if j%3 == 2 {
-				fmt.Print("| ")
-			}
-		}
-	}
+            for j := 0; j < 9; j++ {
+                fmt.Printf(strconv.Itoa(board[i][j]))
+		fmt.Printf(" ")
+                if j % 9 == 8 && (i == 2 || i == 5) {
+                    fmt.Println()
+			fmt.Printf("------+-------+------")
+			fmt.Println()
+                } else if j % 9 == 8 {
+                    fmt.Println()
+                } else if j % 3 == 2 {
+			fmt.Print("| ")
+                }
+            }
+        }
 }
 
 func findZero(board [9][9]int) (bool, int, int) {
